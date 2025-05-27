@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post Analyzer</title>
+</head>
+<body>
+
+<h2>Post Analyzer</h2>
+
+<textarea id="postText" rows="6" cols="60" placeholder="Enter your post here..."></textarea><br><br>
+<button onclick="analyzePost()">Analyze</button>
+
+<div id="result" style="margin-top: 20px;"></div>
+
+<script>
+    function analyzePost() {
+        const text = document.getElementById("postText").value;
+
+        fetch("http://159.89.166.232/api/analyze/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ post_content: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("result").innerHTML = `
+                <p><b>Status:</b> ${data.status}</p>
+                <p><b>Sentiment Score:</b> ${data.sentiment_score}</p>
+                <pre>${JSON.stringify(data.detoxify_results, null, 2)}</pre>
+            `;
+        })
+        .catch(error => {
+            document.getElementById("result").innerText = "Error: " + error;
+        });
+    }
+</script>
+
+</body>
+</html>
